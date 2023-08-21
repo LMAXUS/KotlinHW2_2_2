@@ -1,5 +1,5 @@
 data class Post(
-    val id: Int, //1
+    var id: Int = 0, //1
     val ownerId: Int, //2
     val fromId: Int, //3
     val date: Long, //4
@@ -15,11 +15,33 @@ data class Post(
 
 object WallService{
     private var posts = emptyArray<Post>()
+    private var id = 0
 
     fun add(post: Post): Post{
+        post.id = ++id
         posts += post
         return posts.last()
     }
+
+    fun update(post: Post): Boolean {
+        for((index, postToUpdate) in posts.withIndex()){
+            if(post.id == postToUpdate.id){
+                posts[index] = post
+                return true
+            }
+        }
+        return false
+    }
+
+    fun getById(id: Int): Any{
+        for(post in posts){
+            if(post.id == id){
+                return post
+            }
+        }
+        return false
+    }
+
 }
 
 data class Comment(
@@ -74,4 +96,6 @@ fun main() {
     println(post2.likes.size())
     println("Текст поста: ${post2.text}")
     println(post1.comments.add(Comment(376, "Конец, конец. Концы в воду!")))
+    println(WallService.update(Post(1, 376, 56, 1692333801, "Самое начало", 12, "regular", true, true, true, Comments(), Likes())))
+    println(WallService.getById(1))
 }
